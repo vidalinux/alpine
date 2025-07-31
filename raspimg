@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]
+ then
+   echo "" && \
+   echo " WARNING: first make sure to identify drive with fdisk -l or dmesg."
+   echo "" && \
+   echo " example: ./raspimg copyimg 2024-02-20-aarch64.img"
+   echo ""; exit
+fi
+
+if [ $1 = copyimg ];
+then
+read -p "enter device name to copy image : " DRIVE
+dd if=${2} of="${DRIVE}" status=progress
+fi
