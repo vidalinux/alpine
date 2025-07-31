@@ -77,7 +77,7 @@ EOF
 # fix xorg.conf
 if [ ${rpi5} == true ];
 then
-cat > /etc/X11/xorg.conf << EOF
+cat > ${chroot_dir}/etc/X11/xorg.conf << EOF
 Section "OutputClass"
   Identifier "vc4"
   MatchDriver "vc4"
