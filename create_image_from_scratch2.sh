@@ -19,7 +19,7 @@ apk upgrade"
 chroot ${chroot_dir} /bin/ash -c "source /etc/profile && \
 apk add nano git wget curl rsync networkmanager-openrc parted multipath-tools xfsprogs \
 lsof git sudo fakeroot screen wpa_supplicant-openrc ntfs-3g ntfs-3g-progs exfat-utils \
-p7zip net-tools htop usbutils chrony-openrc openvpn-openrc netcat-openbsd shadow
+p7zip net-tools htop usbutils chrony-openrc openvpn-openrc netcat-openbsd shadow \
 findmnt newt lsblk"
 
 # setup desktop
