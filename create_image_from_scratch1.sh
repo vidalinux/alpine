@@ -3,6 +3,7 @@
 version=3.22.0
 mirror=https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/cloud
 chroot_dir=/mnt/alpine/
+chroot_img=/mnt/cloudimg
 arch=aarch64
 date=$(date +%F)
 alpine_image=generic_alpine-${version}-${arch}-uefi-cloudinit-r0
@@ -18,25 +19,37 @@ parted /dev/loop0 --script mklabel msdos mkpart primary fat32 1MiB 600MiB mkpart
 mkfs.vfat -F 32 /dev/loop0p1 
 mkfs.ext4 /dev/loop0p2
 
+# create chroot directory
+if [ ! -d ${chroot_dir} ];
+then
+mkdir -p ${chroot_dir}
+fi
+
 # mount image to chroot
 #losetup -fP ${image_name}
 mount /dev/loop0p2 ${chroot_dir}
 mkdir ${chroot_dir}/boot
 mount /dev/loop0p1 ${chroot_dir}/boot
 
+# create chroot directory for cloudimg
+if [ ! -d ${chroot_img} ];
+then
+mkdir -p ${chroot_img}
+fi
+
 # download cloud image
 wget -c ${mirror}/${alpine_image}.qcow2
 qemu-img convert -f qcow2 -O raw ${alpine_image}.qcow2 ${alpine_image}.img -p
 losetup -fP ${alpine_image}.img
-mount /dev/loop1p2 /mnt/cloudimg
-mount /dev/loop1p1 /mnt/cloudimg/boot
+mount /dev/loop1p2 ${chroot_img}
+mount /dev/loop1p1 ${chroot_img}/boot
 
 # copy data from cloudimg to alpineimg
-rsync -av /mnt/cloudimg/* /mnt/alpine/
+rsync -av ${chroot_img}/* ${chroot_dir}/
 
 # umount image
-umount /mnt/cloudimg/boot
-umount /mnt/cloudimg
+umount ${chroot_img}/boot
+umount ${chroot_img}
 losetup -d /dev/loop1
 
 # copy qemu-arm-static
