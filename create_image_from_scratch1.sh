@@ -8,10 +8,10 @@ arch=aarch64
 date=$(date +%F)
 alpine_image=generic_alpine-${version}-${arch}-uefi-cloudinit-r0
 image_name=alpine-raspberrypi-5-${date}.img
-image_size=2048
+image_size=3072
 
 # create image
-dd if=/dev/zero of=${image} bs=512 count=$(("${image_size}" * 1024 * 1024 / 512))
+dd if=/dev/zero of=${image_name} bs=512 count=$(("${image_size}" * 1024 * 1024 / 512))
 losetup -fP ${image_name}
 parted /dev/loop0 --script mklabel msdos mkpart primary fat32 1MiB 600MiB mkpart primary ext4 600MiB  100%
 
