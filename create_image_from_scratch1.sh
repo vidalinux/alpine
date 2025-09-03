@@ -10,6 +10,17 @@ alpine_image=generic_alpine-${version}-${arch}-uefi-cloudinit-r0
 image_name=alpine-raspberrypi-5-${date}.img
 image_size=2048
 
+if [ ! -f /usr/local/bin/binfmt_manager ];
+then
+curl -ko /usr/local/bin/binfmt_manager https://raw.githubusercontent.com/mikkeloscar/binfmt-manager/master/binfmt_manager
+chmod +x /usr/local/bin/binfmt_manager
+fi
+
+if [ ! -f /proc/sys/fs/binfmt_misc/aarch64 ];
+then
+/usr/local/bin/binfmt_manager register aarch64
+fi
+
 # create image
 dd if=/dev/zero of=${image_name} bs=512 count=$(("${image_size}" * 1024 * 1024 / 512))
 losetup -fP ${image_name}
